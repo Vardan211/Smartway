@@ -14,7 +14,11 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
+using FluentMigrator.Runner;
+using Smartway.DataAccess;
+using Smartway.Migrations;
 
 namespace Smartway
 {
@@ -30,15 +34,21 @@ namespace Smartway
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Smartway", Version = "v1" });
             });
+            services.AddLogging(c => c.AddFluentMigratorConsole());
+            services.AddFluentMigratorCore();
+            services.ConfigureRunner(c => c.AddPostgres11_0()
+                    .WithGlobalConnectionString(Configuration.GetConnectionString("Db"))
+                    .ScanIn(Assembly.GetExecutingAssembly()).For.Migrations());
 
-            services.AddScoped<IEmployeRepository, EmployeRepository>();
-            services.AddScoped<IEmployeService, EmployeService>();
+            services.AddScoped<DapperContext>();
+            services.AddScoped<DapperDatabase>();
+            services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+            services.AddScoped<IEmployeeService, EmployeeService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

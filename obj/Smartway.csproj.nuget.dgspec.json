@@ -44,6 +44,18 @@
               "target": "Package",
               "version": "[2.0.123, )"
             },
+            "FluentMigrator": {
+              "target": "Package",
+              "version": "[3.3.2, )"
+            },
+            "FluentMigrator.Runner": {
+              "target": "Package",
+              "version": "[3.3.2, )"
+            },
+            "FluentMigrator.Runner.Postgres": {
+              "target": "Package",
+              "version": "[3.3.2, )"
+            },
             "Npgsql": {
               "target": "Package",
               "version": "[5.0.11, )"

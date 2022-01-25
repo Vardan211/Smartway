@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Smartway.DataAccess.Entities;
 using Smartway.Domain;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Smartway.Controllers
@@ -12,50 +9,59 @@ namespace Smartway.Controllers
     [Route("api/[controller]")]
     public class EmployeesController:Controller
     {
-        private readonly IEmployeService _employeService;
+        private readonly IEmployeeService _employeeService;
 
-        public EmployeesController(IEmployeService employeService)
+        public EmployeesController(IEmployeeService employeeService)
         {
-            _employeService = employeService;
+            _employeeService = employeeService;
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Add(Employee employee)
+        {
+            var result = await _employeeService.CreateEmployeeAsync(employee);
+            return Ok(result);
+        }
+        
         [HttpGet]
         public async Task<IActionResult> Get()
         {
+            var result = await _employeeService.GetAllEmployees();
+            return Ok(result);
+        }
 
-            var result = await _employeService.GetAllEmployees();
-            return Ok(result);
-        }
-        [HttpPost]
-        public async Task<IActionResult> Add(Employe employe)
-        {
-            await _employeService.CreateEmployeeAsync(employe);
-            var result = employe.Id;
-            return Ok(result);
-        }
-        [HttpDelete]
-        public async Task<IActionResult> Delete(Employe employe)
-        {
-            await _employeService.DeleteEmployeeAsync(employe);
-            return Ok();
-        }
-        [HttpPut]
-        public async Task<IActionResult> Change(Employe employe)
-        {
-            await _employeService.UpdateEmployeeAsync(employe);
-            return Ok();
-        }
-        [HttpGet("get-by-company")]
+        [HttpGet("by-company")]
         public async Task<IActionResult> GetByCompanyId(int id)
         {
-            var result = await _employeService.GetByCompanyIdAsync(id);
+            var result = await _employeeService.GetByCompanyIdAsync(id);
             return Ok(result);
         }
-        [HttpGet("get-by-department")]
+        
+        [HttpGet("by-department")]
         public async Task<IActionResult> GetByDepartment(string name)
         {
-            var result = await _employeService.GetByDepartamentAsync(name);
+            var result = await _employeeService.GetByDepartmentAsync(name);
             return Ok(result);
+        }
+        [HttpGet("by-id")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            var result = await _employeeService.GetEmployeeById(id);
+            return Ok(result);
+        }
+        
+        [HttpPut]
+        public async Task<IActionResult> Change(Employee employee)
+        {
+            await _employeeService.UpdateEmployeeAsync(employee);
+            return Ok();
+        }
+        
+        [HttpDelete]
+        public async Task<IActionResult> Delete(Employee employee)
+        {
+            await _employeeService.DeleteEmployeeAsync(employee);
+            return Ok();
         }
     }
 }
